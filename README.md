@@ -35,5 +35,5 @@ This plugin renders fenced code blocks like:
 
 - CI runs on pushes to `main` and on pull requests via `.github/workflows/validate.yml`.
 - Releases run from exact version tags like `0.1.0`, not `v0.1.0`.
-- The release workflow verifies the tag matches both `package.json` and `manifest.json`, builds the plugin, and uploads `manifest.json`, `main.js`, and `styles.css` to the GitHub release.
+- The release workflow verifies the tag matches both `package.json` and `manifest.json`, builds the plugin, generates notes with `git-cliff`, and uploads `manifest.json`, `main.js`, and `styles.css` to the GitHub release.
 - Before creating a release tag locally, update the package version with `npm version <patch|minor|major>`, then push the commit and the matching tag.

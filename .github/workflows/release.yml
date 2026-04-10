@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: read
 
     steps:
       - uses: actions/checkout@v6
@@ -18,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -48,13 +49,23 @@ jobs:
       - name: Verify release artifact
         run: npm run verify:release
 
+      - name: Generate changelog
+        id: git-cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --latest --strip header
+        env:
+          OUTPUT: CHANGES.md
+          GITHUB_REPO: ${{ github.repository }}
+
       - name: Publish GitHub release
         uses: ncipollo/release-action@v1.21.0
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
           artifacts: "manifest.json,dist/main.js,dist/styles.css"
-          generateReleaseNotes: true
+          body: ${{ steps.git-cliff.outputs.content }}
           makeLatest: true
           name: ${{ github.ref_name }}
           tag: ${{ github.ref_name }}
