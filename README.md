@@ -26,14 +26,14 @@ This plugin renders fenced code blocks like:
 ## Implementation notes
 
 - Uses the published npm package `@couchbaselabs/topology-ui` directly.
-- Passes an Obsidian plugin-local `assetRoot` so the library resolves bundled images correctly inside the vault.
-- Generates a single vendored runtime bundle under `vendor/topology-ui/` containing the library stylesheet, images, and webfonts.
+- Inlines the library image assets into the rendered markup at runtime, so the release artifact does not need a separate runtime image folder.
+- Inlines the library webfonts into the built stylesheet, so the release artifact stays self-contained.
 - Builds the plugin entrypoint to `dist/main.js`, and only copies it to `main.js` when installing into an Obsidian vault.
-- Builds the final plugin stylesheet to `dist/styles.css`, combining the vendored library CSS with plugin-local styles before install/release packaging.
+- Builds the final plugin stylesheet to `dist/styles.css`, combining the inlined library CSS with plugin-local styles before install/release packaging.
 
 ## Distribution
 
-- Keep source files in Git.
-- Run `npm run build` before each release.
-- Attach `manifest.json`, plus packaged root-level `main.js` and `styles.css`, to the GitHub release.
-- Include the generated `vendor/` folder in your release artifact or release zip for manual installs and BRAT testing.
+- CI runs on pushes to `main` and on pull requests via `.github/workflows/validate.yml`.
+- Releases run from exact version tags like `0.1.0`, not `v0.1.0`.
+- The release workflow verifies the tag matches both `package.json` and `manifest.json`, builds the plugin, and uploads `manifest.json`, `main.js`, and `styles.css` to the GitHub release.
+- Before creating a release tag locally, update the package version with `npm version <patch|minor|major>`, then push the commit and the matching tag.

@@ -1,8 +1,9 @@
-import { MarkdownPostProcessorContext, Plugin, normalizePath } from "obsidian";
+import { MarkdownPostProcessorContext, Plugin } from "obsidian";
+import { topologyAssetDataUris } from "./generated/topology-assets";
 
 type TopologyUiModule = {
   parseTopologySource: (input: string, options?: { allowJavaScript?: boolean }) => unknown;
-  renderTopology: (input: unknown, options?: { assetRoot?: string }) => string;
+  renderTopology: (input: unknown) => string;
 };
 
 const topologyUi = require("@couchbaselabs/topology-ui") as TopologyUiModule;
@@ -25,9 +26,7 @@ export default class CouchbaseTopologyPlugin extends Plugin {
 
     try {
       const topology = this.topologyUi.parseTopologySource(source);
-      host.innerHTML = this.topologyUi.renderTopology(topology, {
-        assetRoot: this.getImageAssetRoot()
-      });
+      host.innerHTML = this.inlineTopologyAssets(this.topologyUi.renderTopology(topology));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       host.empty();
@@ -39,16 +38,14 @@ export default class CouchbaseTopologyPlugin extends Plugin {
     }
   }
 
-  private getImageAssetRoot(): string {
-    const sampleImageUrl = this.getPluginResourcePath("vendor/topology-ui/images/nodebg.png");
-    return sampleImageUrl.replace(/\/nodebg\.png(?:\?.*)?$/, "");
-  }
-
-  private getPluginResourcePath(relativePath: string): string {
-    const pluginFilePath = normalizePath(
-      `${this.app.vault.configDir}/plugins/${this.manifest.id}/${relativePath}`
+  private inlineTopologyAssets(html: string): string {
+    return html.replace(
+      /\b(xlink:href|src)=(["'])images\/([^"'?#]+)\2/g,
+      (match, attributeName: string, quote: string, assetName: string) => {
+        const assetDataUri =
+          topologyAssetDataUris[assetName as keyof typeof topologyAssetDataUris];
+        return assetDataUri ? `${attributeName}=${quote}${assetDataUri}${quote}` : match;
+      }
     );
-
-    return this.app.vault.adapter.getResourcePath(pluginFilePath);
   }
 }

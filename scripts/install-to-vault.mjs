@@ -1,4 +1,4 @@
-import { copyFile, cp, mkdir, readFile, rm } from "node:fs/promises";
+import { copyFile, mkdir, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -27,13 +27,6 @@ for (const fileName of ["manifest.json"]) {
 
 await rm(path.join(installDir, "assets"), { recursive: true, force: true });
 await rm(path.join(installDir, "webfonts"), { recursive: true, force: true });
-
-for (const directoryName of ["vendor"]) {
-  await rm(path.join(installDir, directoryName), { recursive: true, force: true });
-  await cp(path.join(pluginDir, directoryName), path.join(installDir, directoryName), {
-    recursive: true,
-    force: true
-  });
-}
+await rm(path.join(installDir, "vendor"), { recursive: true, force: true });
 
 console.log(installDir);

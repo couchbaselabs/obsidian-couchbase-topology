@@ -1,7 +1,7 @@
 node_modules/
-main.js
 dist/
 vendor/
+src/generated/
 .idea/
 .DS_Store
 *.tsbuildinfo
