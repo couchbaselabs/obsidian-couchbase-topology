@@ -1,6 +1,6 @@
 {
   "name": "obsidian-couchbase-topology",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Obsidian plugin for rendering Couchbase topology fenced code blocks with the topology-ui library.",
   "main": "dist/main.js",
   "type": "module",

@@ -1,10 +1,10 @@
 {
   "id": "couchbase-topology",
   "name": "Couchbase Topology",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "1.12.0",
   "description": "Render Couchbase topology diagrams from fenced code blocks.",
   "author": "Couchbase Labs",
-  "authorUrl": "https://github.com/couchbaselabs/obsidian-couchbase-topology",
+  "authorUrl": "https://github.com/couchbaselabs",
   "isDesktopOnly": false
 }
