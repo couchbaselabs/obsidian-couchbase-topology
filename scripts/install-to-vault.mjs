@@ -19,7 +19,9 @@ const manifest = JSON.parse(
 const installDir = path.join(vaultPath, ".obsidian", "plugins", manifest.id);
 await mkdir(installDir, { recursive: true });
 
-for (const fileName of ["main.js", "manifest.json", "styles.css"]) {
+await copyFile(path.join(pluginDir, "dist", "main.js"), path.join(installDir, "main.js"));
+await copyFile(path.join(pluginDir, "dist", "styles.css"), path.join(installDir, "styles.css"));
+for (const fileName of ["manifest.json"]) {
   await copyFile(path.join(pluginDir, fileName), path.join(installDir, fileName));
 }
 

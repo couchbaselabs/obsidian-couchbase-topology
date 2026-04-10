@@ -1,5 +1,3 @@
-@import "./vendor/topology-ui/styles.css";
-
 .couchbase-topology-error {
   white-space: pre-wrap;
 }

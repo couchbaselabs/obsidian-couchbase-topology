@@ -1,5 +1,7 @@
 node_modules/
 main.js
+dist/
 vendor/
+.idea/
 .DS_Store
 *.tsbuildinfo
