@@ -1,0 +1,30 @@
+{
+  "name": "obsidian-couchbase-topology",
+  "version": "0.1.0",
+  "description": "Obsidian plugin for rendering Couchbase topology fenced code blocks with the topology-ui library.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "copy-assets": "node scripts/copy-assets.mjs",
+    "build": "npm run copy-assets && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "dev": "npm run copy-assets && node esbuild.config.mjs",
+    "install:vault": "node scripts/install-to-vault.mjs"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@couchbaselabs/topology-ui": "1.0.0",
+    "obsidian": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "esbuild": "0.25.5",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [
+    "obsidian",
+    "couchbase",
+    "topology",
+    "markdown",
+    "plugin"
+  ]
+}
