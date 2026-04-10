@@ -1,6 +1,10 @@
 import esbuild from "esbuild";
 import process from "process";
 import { builtinModules } from "node:module";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const topologyUiCjsEntry = require.resolve("@couchbaselabs/topology-ui");
 
 const banner =
 `/*
@@ -17,6 +21,16 @@ const context = await esbuild.context({
   entryPoints: ["src/main.ts"],
   bundle: true,
   mainFields: ["main", "module"],
+  plugins: [
+    {
+      name: "topology-ui-cjs-entry",
+      setup(build) {
+        build.onResolve({ filter: /^@couchbaselabs\/topology-ui$/ }, () => ({
+          path: topologyUiCjsEntry
+        }));
+      }
+    }
+  ],
   external: [
     "obsidian",
     "electron",

@@ -1,32 +1,27 @@
 import { MarkdownPostProcessorContext, Plugin } from "obsidian";
+import topologyUi from "@couchbaselabs/topology-ui";
 import { topologyAssetDataUris } from "./generated/topology-assets";
-
-type TopologyUiModule = {
-  parseTopologySource: (input: string, options?: { allowJavaScript?: boolean }) => unknown;
-  renderTopology: (input: unknown) => string;
-};
-
-const topologyUi = require("@couchbaselabs/topology-ui") as TopologyUiModule;
 
 export default class CouchbaseTopologyPlugin extends Plugin {
   private topologyUi = topologyUi;
 
-  async onload(): Promise<void> {
-    this.registerMarkdownCodeBlockProcessor("couchbase-topology", async (source, el, ctx) => {
-      await this.renderTopologyCodeBlock(source, el, ctx);
+  onload(): void {
+    this.registerMarkdownCodeBlockProcessor("couchbase-topology", (source, el, ctx) => {
+      this.renderTopologyCodeBlock(source, el, ctx);
     });
   }
 
-  private async renderTopologyCodeBlock(
+  private renderTopologyCodeBlock(
     source: string,
     el: HTMLElement,
     _ctx: MarkdownPostProcessorContext
-  ): Promise<void> {
+  ): void {
     const host = el.createDiv({ cls: "couchbase-topology-block" });
 
     try {
       const topology = this.topologyUi.parseTopologySource(source);
-      host.innerHTML = this.inlineTopologyAssets(this.topologyUi.renderTopology(topology));
+      const renderedMarkup = this.inlineTopologyAssets(this.topologyUi.renderTopology(topology));
+      host.replaceChildren(this.createRenderedFragment(host, renderedMarkup));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       host.empty();
@@ -36,6 +31,12 @@ export default class CouchbaseTopologyPlugin extends Plugin {
       });
       console.error("[couchbase-topology] failed to render block", error);
     }
+  }
+
+  private createRenderedFragment(host: HTMLElement, markup: string): DocumentFragment {
+    const range = host.ownerDocument.createRange();
+    range.selectNodeContents(host);
+    return range.createContextualFragment(markup);
   }
 
   private inlineTopologyAssets(html: string): string {
