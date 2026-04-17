@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/node": "^22.15.30",
     "esbuild": "0.25.5",
-    "typescript": "^5.8.3"
+    "typescript": "^6.0.3"
   },
   "keywords": [
     "obsidian",
