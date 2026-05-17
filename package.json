@@ -14,7 +14,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@couchbaselabs/topology-ui": "1.1.0",
+    "@couchbaselabs/topology-ui": "1.1.1",
     "obsidian": "latest"
   },
   "devDependencies": {
